@@ -126,7 +126,7 @@ namespace ColorChord.NET.Outputs.Display
             this.VertexArrayHandle = GL.GenVertexArray();
 
             Matrix3 ViewRotation = /*this.Use3DView ? Matrix3.CreateRotationX((float)Math.PI * -0.1F) :*/ Matrix3.Identity;
-            Vector3 ViewOffset = this.Use3DView ? ((Vector3.UnitZ * -1.3F) + (Vector3.UnitY * 0.3F)) : (Vector3.UnitZ * -1);
+            Vector3 ViewOffset = /*this.Use3DView ? ((Vector3.UnitZ * -1.3F) + (Vector3.UnitY * 0.3F)) :*/ (Vector3.UnitZ * -2);
             
             Vector3 NormalVec = new Vector3(0, 1.2f, 0);
 
@@ -259,7 +259,7 @@ namespace ColorChord.NET.Outputs.Display
             if (!this.SetupDone) { return; }
 
             this.Shader.Use();
-            this.Projection = Matrix4.CreatePerspectiveFieldOfView((float)(Math.PI / 2), (float)this.HostWindow.Width / this.HostWindow.Height, 0.01F, 10F);
+            this.Projection = Matrix4.CreatePerspectiveFieldOfView((float)(Math.PI / 3), (float)this.HostWindow.Width / this.HostWindow.Height, 0.1F, 10F);
             GL.UniformMatrix4(this.LocationProjection, true, ref this.Projection);
         }
 
