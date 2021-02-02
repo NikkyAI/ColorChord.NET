@@ -138,8 +138,9 @@ namespace ColorChord.NET.Outputs.Display
                     double RotStart = Math.PI * 2 * Spoke / this.Spokes;
                     double RotEnd = Math.PI * 2 * (Spoke + 1) / this.Spokes;
 
-                    float RadIn = (float)Seg / RadiusResolution;
-                    float RadOut = (float)(Seg + 1) / RadiusResolution;
+                    const float innerRadius = 0.1F;
+                    float RadIn = innerRadius + (float)Seg / RadiusResolution;
+                    float RadOut = innerRadius + (float)(Seg + 1) / RadiusResolution;
 
                     float StartX = (float)Math.Cos(RotStart);
                     float StartY = (float)Math.Sin(RotStart);
