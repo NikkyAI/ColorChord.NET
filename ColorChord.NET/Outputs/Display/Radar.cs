@@ -19,6 +19,10 @@ namespace ColorChord.NET.Outputs.Display
         /// <summary> Whether to tilt the view and show spikes for beats. </summary>
         private bool Use3DView = false;
 
+        private float Distortion = 0.0f;
+
+        private float InnerRadius = 0.0f;
+
         /// <summary> How many floats comprise one vertex of data sent to the GPU. </summary>
         private const byte DATA_PER_VERTEX = 9;
 
@@ -76,6 +80,8 @@ namespace ColorChord.NET.Outputs.Display
             Log.Info("Reading config for Radar.");
             this.Spokes = ConfigTools.CheckInt(options, "Spokes", 1, 10000, 100, true);
             this.Use3DView = ConfigTools.CheckBool(options, "Is3D", false, true);
+            this.InnerRadius = ConfigTools.CheckFloat(options, "InnerRadius", 0.0f, 1.0f, 0.1f, true);
+            this.Distortion = ConfigTools.CheckFloat(options, "Distortion", -1.0f, 1.0f, 0.0f, true);
 
             ConfigTools.WarnAboutRemainder(options, typeof(IDisplayMode));
         }
@@ -138,9 +144,8 @@ namespace ColorChord.NET.Outputs.Display
                     double RotStart = Math.PI * 2 * Spoke / this.Spokes;
                     double RotEnd = Math.PI * 2 * (Spoke + 1) / this.Spokes;
 
-                    const float innerRadius = 0.1F;
-                    float RadIn = innerRadius + (float)Seg / RadiusResolution;
-                    float RadOut = innerRadius + (float)(Seg + 1) / RadiusResolution;
+                    float RadIn = InnerRadius + (float)Seg / RadiusResolution;
+                    float RadOut = InnerRadius + (float)(Seg + 1) / RadiusResolution;
 
                     float StartX = (float)Math.Cos(RotStart);
                     float StartY = (float)Math.Sin(RotStart);
@@ -216,7 +221,7 @@ namespace ColorChord.NET.Outputs.Display
                     this.TextureData[(this.NewLines * (4 * this.RadiusResolution)) + (Seg * 4) + 0] = (byte)(this.DataSource.GetDataDiscrete()[Seg] >> 16); // R
                     this.TextureData[(this.NewLines * (4 * this.RadiusResolution)) + (Seg * 4) + 1] = (byte)(this.DataSource.GetDataDiscrete()[Seg] >> 8); // G
                     this.TextureData[(this.NewLines * (4 * this.RadiusResolution)) + (Seg * 4) + 2] = (byte)(this.DataSource.GetDataDiscrete()[Seg]); // B
-                    this.TextureData[(this.NewLines * (4 * this.RadiusResolution)) + (Seg * 4) + 3] = this.Use3DView ? (byte)(LowFreqData * 20) : (byte)0; // A
+                    this.TextureData[(this.NewLines * (4 * this.RadiusResolution)) + (Seg * 4) + 3] = (byte)(LowFreqData * 20 * this.Distortion) ; // A
                 }
                 this.NewLines++;
                 this.NewData = true;
